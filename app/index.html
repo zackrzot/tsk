@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>tsk</title>
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="app-content/app.css" rel="stylesheet" />
+		<img src="\public\img\tsk.png" alt="tsk" padding-bottom="10">
+	</head>
+	<body class="container">
+		<!-- header -->
+		<header>
+			<ul class="nav nav-tabs">
+				<li ng-class="{active: activeTab === 'tasks'}"><a ui-sref="tasks">Tasks</a></li>
+				<li ng-class="{active: activeTab === 'create'}"><a ui-sref="create">Create</a></li>
+				<li ng-class="{active: activeTab === 'account'}"><a ui-sref="account">Account</a></li>
+				<li><a href="/login" target="_self">Logout</a></li>
+			</ul>
+			<div class="flash-message" ng-if="flash">
+				<div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
+			</div>
+		</header>
+
+		<!-- main -->
+		<main ui-view></main>
+
+		<footer>
+		<br><br><br><hr>
+			<div class="credits text-center">
+				<p>
+					<a href="http://githublink.com">View source on GitHub!</a>
+				</p>
+				<p>
+					<a href="http://zackrzot.com">zackrzot.com</a>
+				</p>
+			</div>
+		</footer>
+
+		<!-- external scripts -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+
+		<!-- application scripts -->
+		<script src="app.js"></script>
+		<script src="app-services/user.service.js"></script>
+		<script src="app-services/flash.service.js"></script>
+		<script src="app-services/log.service.js"></script>
+		<script src="app-services/task.service.js"></script>
+		<script src="tasks/index.controller.js"></script>
+		<script src="create/index.controller.js"></script>
+		<script src="account/index.controller.js"></script>
+	</body>
+</html>

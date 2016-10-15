@@ -1,0 +1,6 @@
+﻿{
+	"connectionString": "mongodb://localhost:27017/tsk_01",
+    "apiUrl": "http://localhost:8080/api",
+    "secret": "This is top secret.",
+	"port": 8080
+}

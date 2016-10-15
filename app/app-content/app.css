@@ -1,0 +1,11 @@
+﻿body {
+    padding: 20px 0;
+}
+
+header {
+	padding-top: 10px;
+}
+
+.flash-message {
+    margin-top: 20px;
+}

@@ -1,0 +1,22 @@
+﻿<h2>Create a new task</h2>
+<br>
+<div class="form-container">
+    <form method="post">
+		<div class="form-group">
+            <label for="taskname">Task name: </label>
+            <input id="taskname" class="form-control" ng-model="vm.task.taskname" />
+        </div>
+		<div class="form-group">
+            <label for="taskdesc">Task description: </label>
+            <input id="taskdesc" class="form-control" ng-model="vm.task.taskdesc" />
+        </div>
+		<div class="form-group">
+            <label for="taskactive">Create as active task: </label>
+			<input id="taskactive" type="checkbox" name="active" value="taskactive" ng-model="vm.task.taskactive" checked />
+        </div>
+        <div class="form-group">
+			<button class="btn btn-primary" ng-click="vm.createTask()">Save</button>
+            <button class="btn btn-danger" ng-click="vm.clearInputs()">Clear fields</button>
+        </div>
+    </form>
+</div>

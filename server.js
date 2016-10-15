@@ -2,6 +2,7 @@
 require('rootpath')();
 var express = require('express');
 var app = express();
+var favicon = require('serve-favicon');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
@@ -16,6 +17,9 @@ app.use(session({ secret: config.secret, resave: false, saveUninitialized: true 
 
 // Static path for resources
 app.use('/public', express.static(__dirname + '/public'))
+
+// Assign favicon location
+app.use(favicon(__dirname + '/public/img/favicon.ico'));
 
 // Secure the api using JWT
 app.use('/api', expressJwt({ secret: config.secret }).unless({ path: ['/api/users/authenticate', '/api/users/register', '/api/tasks'] }));

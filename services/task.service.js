@@ -11,6 +11,7 @@ var service = {};
 
 service.getById = getById;
 service.create = create;
+service.getUsersTasks = getUsersTasks;
 service.update = update;
 service.getAllTasks = getAllTasks;
 service.delete = _delete;
@@ -36,15 +37,38 @@ function getById(_id) {
 }
 
 function getAllTasks() {
+	console.log("express.task.service: getting all tasks from db.");
     var deferred = Q.defer();
-
+	
     db.tasks.find(function (err, tasks) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (tasks) {
-            deferred.resolve(tasks);
+            console.log("express.task.service: YES");
+			deferred.resolve(tasks);
         } else {
-            // task not found
+            console.log("express.task.service: NO");
+            deferred.resolve();
+        }
+    });
+	
+    return deferred.promise;
+}
+
+function getUsersTasks(_id) {
+	console.log("express.task.service: getting a user "+_id+" tasks from db.");
+    var deferred = Q.defer();
+	
+    db.tasks.find(
+	{ "taskowner": _id },
+	function (err, tasks) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        if (tasks) {
+            console.log("express.task.service: YES");
+			deferred.resolve(tasks.toArray());
+        } else {
+            console.log("express.task.service: NO");
             deferred.resolve();
         }
     });
@@ -55,30 +79,12 @@ function getAllTasks() {
 function create(taskParam) {
     var deferred = Q.defer();
 
-    // validation
-    db.tasks.findOne(
-        { taskname: taskParam.taskname },
-        function (err, task) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
-            if (task) {
-                // taskname already exists
-                deferred.reject('Task name "' + taskParam.taskname + '" is already in use.');
-            } else {
-                createTask(taskParam);
-            }
-        });
-
-    function createTask(taskParam) {
-        var task = taskParam;
-
-        db.tasks.insert(
-            task,
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-                deferred.resolve();
-            });
-    }
+	db.tasks.insert(
+		taskParam,
+		function (err, doc) {
+			if (err) deferred.reject(err.name + ': ' + err.message);
+			deferred.resolve();
+		});
 
     return deferred.promise;
 }

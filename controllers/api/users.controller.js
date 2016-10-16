@@ -63,6 +63,7 @@ function getCurrentUser(req, res) {
     userService.getById(req.user.sub)
         .then(function (user) {
             if (user) {
+				console.log(user);
                 res.send(user);
             } else {
                 res.sendStatus(404);

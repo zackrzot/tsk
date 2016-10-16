@@ -31,7 +31,7 @@
             // get current user
             UserService.GetCurrent().then(function (user) {
                 vm.user = user;
-				vm.task.taskowner = vm.user.username;
+				vm.task.taskowner = vm.user._id;
             });
         }
 		

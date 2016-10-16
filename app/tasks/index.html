@@ -1,7 +1,19 @@
 ﻿<h3>Welcome back {{vm.user.username}}. Here are your tasks:</h3>
 
+<div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuView" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    View Tasks
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuView" id="dropdownMenuViewOptions"></ul>
+</div>
 
-
-<h3>{{vm.tasks}}</h3>
-
-
+<h2 id="activeTasksLabel">Active Tasks</h2>
+<ul class="list-group" id="activeTasks"></ul>
+<hr>
+<h2 id="inactiveTasksLabel">Inactive Tasks</h2>
+<ul class="list-group" id="inactiveTasks"></ul>
+<hr>
+<h2 id="completedTasksLabel">Completed Tasks</h2>
+<ul class="list-group" id="completedTasks"></ul>
+<hr>

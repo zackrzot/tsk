@@ -12,15 +12,18 @@
         service.Create = Create;
         service.Update = Update;
         service.Delete = Delete;
+		service.GetUsersTasks = GetUsersTasks;
 
         return service;
 
         function GetAll() {
-            return $http.get('/api/tasks').then(handleSuccess, handleError);
+			console.log("angular.task.service: sending http get request.");
+            return $http.get('/api/tasks');
         }
 		
-		function GetUsersTasks(user) {
-			return $http.get('/api/tasks/' + user).then(handleSuccess, handleError);
+		function GetUsersTasks(_id) {
+			console.log(_id);
+			return $http.get('/api/tasks/' + _id).then(handleSuccess, handleError);
 		}
 
         function Create(task) {

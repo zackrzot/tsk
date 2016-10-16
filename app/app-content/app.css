@@ -9,3 +9,36 @@ header {
 .flash-message {
     margin-top: 20px;
 }
+
+.noteContainer {
+    position: relative;
+	height: 200px;
+	width: 200px;
+}
+
+.titleSpan {
+    position: absolute;
+	font-size: 20px;
+    left: 10px;
+    top: 10px;
+}
+
+.descSpan {
+    position: absolute;
+    left: 10px;
+    top: 40px;
+}
+
+.createdSpan {
+    position: absolute;
+    left: 10px;
+    top: 60px;
+}
+
+.task-item{
+	cellpadding: 20px;
+	position:relative;
+	min-height:100%;
+	min-width:100%;
+	
+}

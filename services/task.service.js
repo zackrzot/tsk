@@ -92,51 +92,27 @@ function create(taskParam) {
 function update(_id, taskParam) {
     var deferred = Q.defer();
 
-    // validation
-    db.tasks.findById(_id, function (err, task) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
+	// fields to update
+	var set = {
+		taskname: taskParam.taskname,
+		taskowner: taskParam.taskowner,
+		taskdesc: taskParam.taskdesc,
+		taskcreatedon: taskParam.taskcreatedon,
+		taskactive: taskParam.taskactive,
+		taskcompleted: taskParam.taskcompleted,
+		taskdeleted: taskParam.taskdeleted,
+	};
 
-        if (task.taskname !== taskParam.taskname) {
-            // taskname has changed so check if the new taskname is already taken
-            db.tasks.findOne(
-                { taskname: taskParam.taskname },
-                function (err, task) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
+	db.tasks.update(
+		{ _id: mongo.helper.toObjectID(_id) },
+		{ $set: set },
+		function (err, doc) {
+			if (err) deferred.reject(err.name + ': ' + err.message);
+			deferred.resolve();
+		});
 
-                    if (task) {
-                        // task name already exists
-                        deferred.reject('Task name "' + req.body.taskname + '" is already in use.')
-                    } else {
-                        updateTask();
-                    }
-                });
-        } else {
-            updateTask();
-        }
-    });
-
-    function updateTask() {
-        // fields to update
-        var set = {
-            taskName: taskParam.taskname,
-			taskOwner: taskParam.taskowner,
-            taskDesc: taskParam.taskdesc,
-            taskCreatedOn: taskParam.taskcreatedon,
-			taskActive: taskParam.taskactive,
-			taskCompleted: taskParam.taskcompleted,
-			taskDeleted: taskParam.taskdeleted,
-        };
-
-        db.tasks.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
-                deferred.resolve();
-            });
-    }
-
+		console.log("task updated");
+		
     return deferred.promise;
 }
 

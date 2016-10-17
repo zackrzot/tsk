@@ -31,7 +31,7 @@
         }
 
         function Update(task) {
-            return $http.put('/api/tasks/' + task.taskname, task).then(handleSuccess, handleError);
+            return $http.put('/api/tasks/' + task._id, task).then(handleSuccess, handleError);
         }
 
         function Delete(_id) {

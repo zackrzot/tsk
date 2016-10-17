@@ -14,23 +14,71 @@
 
 		vm.toggleComplete = toggleComplete;
 		vm.deleteTask = deleteTask;
+		vm.confirmDeleteTask = confirmDeleteTask;
 
         initController();
 
-		function deleteTask() {
+		function deleteTask(_id) {
 			
-			console.log("DEL");
+			TaskService.Delete(_id);
+			FlashService.Error("Task deleted.");
 			
+			refreshTasksLists();
 			
 		}
 		
-
+		function refreshTasksLists(){
+			clearChildNodes('activeTasks');
+			clearChildNodes('inactiveTasks');
+			clearChildNodes('completedTasks');
+			
+			getTasks();
+		}
 		
-		function toggleComplete(){
+		function clearChildNodes(node){
+			var node = $window.document.getElementById(node);
+			while (node.firstChild) {
+				node.removeChild(node.firstChild);
+			}
+		}
+		
+		function confirmDeleteTask(_id) {
+			var r = confirm("Are you sure you want to delete this task?");
+			if (r == true) {
+				deleteTask(_id);
+			} 
+		}
+		
+		function getLocalTaskInfo(_id){
+			var len = vm.tasks.length;
+			for (var i = 0; i < len; i++) {
+				var task = vm.tasks[i];
+				if(task._id == _id)
+					return task;
+			}
 			
-			console.log("COMP");
+			FlashService.Error("Unable to modify requested task.");
+		}
+		
+		function toggleComplete(_id){
 			
+			var task = getLocalTaskInfo(_id);
 			
+			if(task.taskcompleted){
+				FlashService.Success("Task marked as incomplete.");
+				task.taskactive = true;
+				task.taskcompleted = false;
+				//TaskService.Update(task);
+			}
+			else{
+				FlashService.Success("Task marked as completed.");
+				task.taskactive = false;
+				task.taskcompleted = true;
+				TaskService.Update(task);
+			}
+			
+			refreshTasksLists();
+
 		}
 		
         function initController() {
@@ -51,16 +99,11 @@
 		
 		function getTasks(){
 			// get users tasks
-			console.log("angular.index.controller: getting users tasks from TaskService.");
-			
 			TaskService.GetUsersTasks(vm.user._id).then(function (tasks) {
-				
-				console.log("angular.index.controller: got all tasks from TaskService.");
 				
 				vm.tasks = tasks;
 			
 				displayTasks();
-
 			});
 		}
 		
@@ -94,11 +137,11 @@
 			}
 			
 			var activeTasksLabel = $window.document.getElementById('activeTasksLabel');
-			activeTasksLabel.innerHTML = activeTasksLabel.innerHTML + " ("+activeCount.toString()+")";
+			activeTasksLabel.innerHTML = "Active ("+activeCount.toString()+")";
 			var inactiveTasksLabel = $window.document.getElementById('inactiveTasksLabel');
-			inactiveTasksLabel.innerHTML = inactiveTasksLabel.innerHTML + " ("+inactiveCount.toString()+")";
+			inactiveTasksLabel.innerHTML = "Inactive ("+inactiveCount.toString()+")";
 			var completedTasksLabel = $window.document.getElementById('completedTasksLabel');
-			completedTasksLabel.innerHTML = completedTasksLabel.innerHTML + " ("+completedCount.toString()+")";
+			completedTasksLabel.innerHTML = "Completed ("+completedCount.toString()+")";
 			
 		}
 		
@@ -111,7 +154,6 @@
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/inactive", "Inactive"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/completed", "Completed"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/overdue", "Overdue"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/deleted", "Deleted"));
 			
 		}
 		
@@ -217,15 +259,15 @@
 			else{
 				completeButton.innerHTML = "Mark Complete";
 			}
-			completeButton.setAttribute('ng-click', 'toggleComplete()');
-			
+			completeButton.setAttribute('ng-click', 'vm.toggleComplete(\''+_id+'\')');
+			$compile(completeButton)($scope);
 			// Delete task
 
 			var deleteButtonDiv = $window.document.createElement("div");
 			deleteButtonDiv.setAttribute('class', 'ng-scope');
 			var deleteButton = $window.document.createElement("button");
 			deleteButton.setAttribute('class', 'btn-sm btn-danger');
-			deleteButton.setAttribute('ng-click', 'vm.deleteTask()');
+			deleteButton.setAttribute('ng-click', 'vm.confirmDeleteTask(\''+_id+'\')');
 			deleteButton.innerHTML = "Delete Task";
 			deleteButtonDiv.appendChild(deleteButton);
 			$compile(deleteButtonDiv)($scope);

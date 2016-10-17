@@ -42,3 +42,15 @@ header {
 	min-width:100%;
 	
 }
+
+.titleLabel{
+	padding-left:2px;
+	padding-right:10px;
+	font-size: 120%;
+}
+
+.btn-sm{
+	
+	min-width:150px;
+	
+}

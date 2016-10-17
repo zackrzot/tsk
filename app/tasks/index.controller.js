@@ -5,15 +5,34 @@
         .module('app')
         .controller('Tasks.IndexController', Controller);
 
-    function Controller($window, UserService, TaskService, FlashService) {
+    function Controller($scope, $compile, $window, UserService, TaskService, FlashService) {
         var vm = this;
 
         vm.user = null;
 		vm.tasks = null;
 		
 
+		vm.toggleComplete = toggleComplete;
+		vm.deleteTask = deleteTask;
+
         initController();
 
+		function deleteTask() {
+			
+			console.log("DEL");
+			
+			
+		}
+		
+
+		
+		function toggleComplete(){
+			
+			console.log("COMP");
+			
+			
+		}
+		
         function initController() {
 			
             // get current user
@@ -25,6 +44,7 @@
 				
 				// Populate the filter selection
 				populateViewOptionsDropdown();
+
             });
         }
 		
@@ -38,8 +58,9 @@
 				console.log("angular.index.controller: got all tasks from TaskService.");
 				
 				vm.tasks = tasks;
-				
+			
 				displayTasks();
+
 			});
 		}
 		
@@ -85,17 +106,16 @@
 			
 			var dropdownMenuViewOptions = $window.document.getElementById('dropdownMenuViewOptions');
 			
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/all", "All"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/active", "Active"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/inactive", "Inactive"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/completed", "Completed"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/overdue", "Overdue"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("/deleted", "Deleted"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/all", "All"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/active", "Active"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/inactive", "Inactive"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/completed", "Completed"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/overdue", "Overdue"));
+			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/deleted", "Deleted"));
 			
 		}
 		
 		function generateViewOptionsDropdownItem(link, text){
-			
 			var listItem = $window.document.createElement("li");
 			var linkElement = $window.document.createElement("a");
 			linkElement.setAttribute('href', link);
@@ -144,6 +164,7 @@
 			taskInfoDiv.appendChild(generateGenericLabelDiv("Description: ", taskDesc));
 			taskInfoDiv.appendChild(generateGenericLabelDiv("Created: ", createdOn));
 			
+			
 			return taskInfoDiv;
 			
 		}
@@ -156,10 +177,11 @@
 			
 			// Title label
 			var titleLabel = $window.document.createElement("label");
+			titleLabel.setAttribute('class', 'titleLabel');
 			titleLabel.innerHTML = title;
 			
 			// Content label
-			var contentLabel = $window.document.createElement("label");
+			var contentLabel = $window.document.createElement("p");
 			contentLabel.innerHTML = content;
 			
 			// Add labels to div
@@ -175,7 +197,7 @@
 			// Active / Inactive task button
 			
 			var activeInactivebutton = $window.document.createElement("button");
-			activeInactivebutton.setAttribute('class', 'btn btn-warning');
+			activeInactivebutton.setAttribute('class', 'btn-sm btn-warning');
 
 			if(taskActive){
 				activeInactivebutton.innerHTML = "Mark Inactive";
@@ -187,7 +209,7 @@
 			// Completed task
 
 			var completeButton = $window.document.createElement("button");
-			completeButton.setAttribute('class', 'btn btn-primary');
+			completeButton.setAttribute('class', 'btn-sm btn-success');
 			
 			if(taskComplete){
 				completeButton.innerHTML = "Mark Incomplete";
@@ -195,6 +217,18 @@
 			else{
 				completeButton.innerHTML = "Mark Complete";
 			}
+			completeButton.setAttribute('ng-click', 'toggleComplete()');
+			
+			// Delete task
+
+			var deleteButtonDiv = $window.document.createElement("div");
+			deleteButtonDiv.setAttribute('class', 'ng-scope');
+			var deleteButton = $window.document.createElement("button");
+			deleteButton.setAttribute('class', 'btn-sm btn-danger');
+			deleteButton.setAttribute('ng-click', 'vm.deleteTask()');
+			deleteButton.innerHTML = "Delete Task";
+			deleteButtonDiv.appendChild(deleteButton);
+			$compile(deleteButtonDiv)($scope);
 			
 			// Create div and add children
 
@@ -202,9 +236,12 @@
 			buttonContainer.appendChild(activeInactivebutton);
 			buttonContainer.appendChild($window.document.createElement("br"));
 			buttonContainer.appendChild(completeButton);
+			buttonContainer.appendChild($window.document.createElement("br"));
+			buttonContainer.appendChild(deleteButtonDiv);
 			
 			return buttonContainer;
 			
 		}
+		
 	}
 })();

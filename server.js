@@ -7,6 +7,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
 var config = require('config.json');
+var datejs = require('datejs');
 
 // Properties
 app.set('view engine', 'ejs');

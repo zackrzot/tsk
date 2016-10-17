@@ -8,11 +8,53 @@
 
     function config($stateProvider, $urlRouterProvider) {
         // default route
-        $urlRouterProvider.otherwise("/");
+        $urlRouterProvider.otherwise("/all");
 
         $stateProvider
             .state('tasks', {
-                url: '/',
+                url: '/all',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('all', {
+                url: '/all',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('active', {
+                url: '/active',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('inactive', {
+                url: '/inactive',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('completed', {
+                url: '/completed',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('overdue', {
+                url: '/overdue',
+                templateUrl: 'tasks/index.html',
+                controller: 'Tasks.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'tasks' }
+            })
+			.state('deleted', {
+                url: '/deleted',
                 templateUrl: 'tasks/index.html',
                 controller: 'Tasks.IndexController',
                 controllerAs: 'vm',

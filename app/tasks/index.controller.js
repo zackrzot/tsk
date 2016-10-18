@@ -11,7 +11,6 @@
         vm.user = null;
 		vm.tasks = null;
 		
-
 		vm.toggleComplete = toggleComplete;
 		vm.toggleActive = toggleActive;
 		vm.deleteTask = deleteTask;
@@ -20,19 +19,16 @@
         initController();
 
 		function deleteTask(_id) {
-			
-			TaskService.Delete(_id);
-			FlashService.Error("Task deleted.");
-			
-			refreshTasksLists();
-			
+			TaskService.Delete(_id).then(function (user) {
+				FlashService.Error("Task deleted.");
+				refreshTasksLists();
+            });
 		}
 		
 		function refreshTasksLists(){
 			clearChildNodes('activeTasks');
 			clearChildNodes('inactiveTasks');
 			clearChildNodes('completedTasks');
-			
 			getTasks();
 		}
 		
@@ -57,52 +53,50 @@
 				if(task._id == _id)
 					return task;
 			}
-			
 			FlashService.Error("Unable to modify requested task.");
 		}
 		
 		function toggleComplete(_id){
-			
 			var task = getLocalTaskInfo(_id);
 			
 			if(task.taskcompleted){
-				FlashService.Success("Task marked as incomplete.");
 				task.taskactive = true;
 				task.taskcompleted = false;
-				TaskService.Update(task);
+				TaskService.Update(task).then(function (user) {
+					FlashService.Success("Task '"+task.taskname+"' marked as incomplete.");
+					refreshTasksLists();
+				});
 			}
 			else{
-				FlashService.Success("Task marked as completed.");
 				task.taskactive = false;
 				task.taskcompleted = true;
-				TaskService.Update(task);
+				TaskService.Update(task).then(function (user) {
+					FlashService.Success("Task '"+task.taskname+"' marked as completed.");
+					refreshTasksLists();
+				});
 			}
-			
-			refreshTasksLists();
-
 		}
 		
 		function toggleActive(_id){
-			
 			var task = getLocalTaskInfo(_id);
 			
 			if(task.taskactive){
-				FlashService.Success("Task moved to inactive tasks.");
 				task.taskactive = false;
-				TaskService.Update(task);
+				TaskService.Update(task).then(function (user) {
+					FlashService.Success("Task '"+task.taskname+"' moved to inactive tasks.");
+					refreshTasksLists();
+				});
 			}
 			else{
-				FlashService.Success("Task moved to active tasks.");
 				task.taskactive = true;
-				TaskService.Update(task);
+				TaskService.Update(task).then(function (user) {
+					FlashService.Success("Task '"+task.taskname+"' moved to active tasks.");
+					refreshTasksLists();
+				});
 			}
-			
-			refreshTasksLists();
-
 		}
 		
         function initController() {
-			
             // get current user
             UserService.GetCurrent().then(function (user) {
                 vm.user = user;
@@ -112,22 +106,18 @@
 				
 				// Populate the filter selection
 				populateViewOptionsDropdown();
-
             });
         }
 		
 		function getTasks(){
 			// get users tasks
 			TaskService.GetUsersTasks(vm.user._id).then(function (tasks) {
-				
 				vm.tasks = tasks;
-			
 				displayTasks();
 			});
 		}
 		
 		function displayTasks(){
-
 			var div_activeTasks = $window.document.getElementById('activeTasks');
 			var div_inactiveTasks = $window.document.getElementById('inactiveTasks');
 			var div_completedTasks = $window.document.getElementById('completedTasks');
@@ -141,15 +131,15 @@
 				var task = vm.tasks[i];
 
 				if(task.taskactive && !task.taskdeleted && !task.taskcompleted){
-					div_activeTasks.appendChild(generateTaskElementListItem(task._id, task.taskname, task.taskdesc, task.taskcreatedon, task.taskactive, task.taskcompleted));
+					div_activeTasks.appendChild(generateTaskElementListItem(task, "list-group-item-active-task"));
 					activeCount++;
 				}
 				if(!task.taskactive && !task.taskdeleted && !task.taskcompleted){
-					div_inactiveTasks.appendChild(generateTaskElementListItem(task._id, task.taskname, task.taskdesc, task.taskcreatedon, task.taskactive, task.taskcompleted));
+					div_inactiveTasks.appendChild(generateTaskElementListItem(task, "list-group-item-inactive-task"));
 					inactiveCount++;
 				}
 				if(task.taskcompleted){
-					div_completedTasks.appendChild(generateTaskElementListItem(task._id, task.taskname, task.taskdesc, task.taskcreatedon, task.taskactive, task.taskcompleted));
+					div_completedTasks.appendChild(generateTaskElementListItem(task, "list-group-item-completed-task"));
 					completedCount++;
 				}
 			}
@@ -164,7 +154,6 @@
 		}
 		
 		function populateViewOptionsDropdown(){
-			
 			var dropdownMenuViewOptions = $window.document.getElementById('dropdownMenuViewOptions');
 			
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/all", "All"));
@@ -172,7 +161,6 @@
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/inactive", "Inactive"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/completed", "Completed"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/overdue", "Overdue"));
-			
 		}
 		
 		function generateViewOptionsDropdownItem(link, text){
@@ -182,14 +170,12 @@
 			linkElement.innerHTML = text;
 			listItem.appendChild(linkElement);
 			
-			
 			return listItem;
 		}
 		
-		function generateTaskElementListItem(_id, taskName, taskDesc, createdOn, taskActive, taskComplete){
-			
+		function generateTaskElementListItem(task, addlClass){
 			var taskItemListContainer = $window.document.createElement("li");
-			taskItemListContainer.setAttribute('class', 'list-group-item');
+			taskItemListContainer.setAttribute('class', 'list-group-item ' + addlClass);
 			
 			var tasksTable = $window.document.createElement("table");
 			tasksTable.setAttribute('class', 'task-item');
@@ -202,32 +188,28 @@
 			tasksTableRow.appendChild(taskInfoContainer);
 			
 			// Append data to task info cell
-			taskInfoContainer.appendChild(generateTaskInfoDiv(taskName, taskDesc, createdOn));
+			taskInfoContainer.appendChild(generateTaskInfoDiv(task));
 			
 			var taskButtonContainer = $window.document.createElement("td");
 			tasksTableRow.appendChild(taskButtonContainer);
 
 			// Append data to task buttons cell
-			taskButtonContainer.appendChild(generateActionButtonDiv(_id, taskActive, taskComplete));
+			taskButtonContainer.appendChild(generateActionButtonDiv(task));
 			
 			return taskItemListContainer;
 		}
 		
-		function generateTaskInfoDiv(taskName, taskDesc, createdOn){
-			
+		function generateTaskInfoDiv(task){
 			// Task Info Div
 			var taskInfoDiv = $window.document.createElement("div");
-			taskInfoDiv.appendChild(generateGenericLabelDiv("Name: ", taskName));
-			taskInfoDiv.appendChild(generateGenericLabelDiv("Description: ", taskDesc));
-			taskInfoDiv.appendChild(generateGenericLabelDiv("Created: ", createdOn));
-			
+			taskInfoDiv.appendChild(generateGenericLabelDiv("Name: ", task.taskname));
+			taskInfoDiv.appendChild(generateGenericLabelDiv("Description: ", task.taskdesc));
+			taskInfoDiv.appendChild(generateGenericLabelDiv("Created: ", task.taskcreatedon));
 			
 			return taskInfoDiv;
-			
 		}
 		
 		function generateGenericLabelDiv(title, content){
-			
 			// Label div
 			var labelDiv = $window.document.createElement("div");
 			labelDiv.setAttribute('class', 'form-group');
@@ -246,53 +228,48 @@
 			labelDiv.appendChild(contentLabel);
 			
 			return labelDiv;
-			
 		}
 		
-		function generateActionButtonDiv(_id, taskActive, taskComplete){
-			
+		function generateActionButtonDiv(task){
 			// Active / Inactive task button
-			
 			var activeInactivebutton = $window.document.createElement("button");
 			activeInactivebutton.setAttribute('class', 'btn-sm btn-warning');
 
-			if(taskActive){
+			if(task.taskactive){
 				activeInactivebutton.innerHTML = "Mark Inactive";
 			}
 			else{
 				activeInactivebutton.innerHTML = "Mark Active";
 			}
-			activeInactivebutton.setAttribute('ng-click', 'vm.toggleActive(\''+_id+'\')');
+			activeInactivebutton.setAttribute('ng-click', 'vm.toggleActive(\''+task._id+'\')');
 			$compile(activeInactivebutton)($scope);
 			
 			// Completed task
-
 			var completeButton = $window.document.createElement("button");
 			completeButton.setAttribute('class', 'btn-sm btn-success');
 			
-			if(taskComplete){
+			if(task.taskcompleted){
 				completeButton.innerHTML = "Mark Incomplete";
 			}
 			else{
 				completeButton.innerHTML = "Mark Complete";
 			}
-			completeButton.setAttribute('ng-click', 'vm.toggleComplete(\''+_id+'\')');
+			completeButton.setAttribute('ng-click', 'vm.toggleComplete(\''+task._id+'\')');
 			$compile(completeButton)($scope);
+			
 			// Delete task
-
 			var deleteButtonDiv = $window.document.createElement("div");
 			deleteButtonDiv.setAttribute('class', 'ng-scope');
 			var deleteButton = $window.document.createElement("button");
 			deleteButton.setAttribute('class', 'btn-sm btn-danger');
-			deleteButton.setAttribute('ng-click', 'vm.confirmDeleteTask(\''+_id+'\')');
+			deleteButton.setAttribute('ng-click', 'vm.confirmDeleteTask(\''+task._id+'\')');
 			deleteButton.innerHTML = "Delete Task";
 			deleteButtonDiv.appendChild(deleteButton);
 			$compile(deleteButtonDiv)($scope);
 			
 			// Create div and add children
-
 			var buttonContainer = $window.document.createElement("div");
-			if(!taskComplete){
+			if(!task.taskcompleted){
 				buttonContainer.appendChild(activeInactivebutton);
 			}
 			buttonContainer.appendChild($window.document.createElement("br"));
@@ -301,8 +278,6 @@
 			buttonContainer.appendChild(deleteButtonDiv);
 			
 			return buttonContainer;
-			
 		}
-
 	}
 })();

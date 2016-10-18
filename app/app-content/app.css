@@ -54,3 +54,18 @@ header {
 	min-width:150px;
 	
 }
+
+.list-group-item-active-task {
+    color: #ffffff;
+    background-color: #ab5701;
+}
+
+.list-group-item-inactive-task {
+	color: #ffffff;
+    background-color: #560000;
+}
+
+.list-group-item-completed-task {
+	color: #ffffff;
+    background-color: #00310b;
+}

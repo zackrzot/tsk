@@ -37,7 +37,6 @@ function getById(_id) {
 }
 
 function getAllTasks() {
-	console.log("express.task.service: getting all tasks from db.");
     var deferred = Q.defer();
 	
     db.tasks.find(function (err, tasks) {
@@ -54,7 +53,6 @@ function getAllTasks() {
 }
 
 function getUsersTasks(_id) {
-	console.log("express.task.service: getting a user "+_id+" tasks from db.");
     var deferred = Q.defer();
 	
     db.tasks.find(
@@ -63,10 +61,8 @@ function getUsersTasks(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (tasks) {
-            console.log("express.task.service: YES");
 			deferred.resolve(tasks.toArray());
         } else {
-            console.log("express.task.service: NO");
             deferred.resolve();
         }
     });
@@ -108,8 +104,6 @@ function update(_id, taskParam) {
 			if (err) deferred.reject(err.name + ': ' + err.message);
 			deferred.resolve();
 		});
-
-		console.log("task updated");
 		
     return deferred.promise;
 }

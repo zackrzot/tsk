@@ -22,7 +22,6 @@
         }
 		
 		function GetUsersTasks(_id) {
-			console.log(_id);
 			return $http.get('/api/tasks/' + _id).then(handleSuccess, handleError);
 		}
 

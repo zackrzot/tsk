@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(session({ secret: config.secret, resave: false, saveUninitialized: true }));
 
 // Static path for resources
-app.use('/public', express.static(__dirname + '/public'))
+app.use('/public', express.static(__dirname + '/public'));
 
 // Assign favicon location
 app.use(favicon(__dirname + '/public/img/favicon.ico'));

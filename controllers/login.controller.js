@@ -46,6 +46,7 @@ router.post('/', function (req, res) {
         if (error) {
 			console.log(response);
 			console.log(error);
+			console.log("env port: " + process.env.PORT);
             return res.render('login', { error: 'An error occurred' });
         }
 

@@ -1,6 +1,6 @@
 ﻿{
 	"connectionString": "mongodb://heroku_vjh00djb:hlfl9vd0qqojfksqmf9hfocmiq@ds055485.mlab.com:55485/heroku_vjh00djb",
-	"apiUrl": "http://localhost:8080/api",
+	"apiUrl": "https://tsk-.herokuapp.com/api",
 	"secret": "This is top secret.",
 	"port": 8080
 }

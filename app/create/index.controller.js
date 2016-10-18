@@ -5,7 +5,7 @@
         .module('app')
         .controller('Create.IndexController', Controller);
 
-    function Controller(UserService, FlashService, TaskService) {
+    function Controller($window, UserService, FlashService, TaskService) {
         var vm = this;
 
         vm.user = null;
@@ -37,6 +37,12 @@
 		
 		function createTask(){
 			
+			if(vm.task.taskname  == "" || vm.task.taskname  == null)
+			{
+				FlashService.Error("Task title must not be empty.");
+				return;
+			}
+			
 			// vm.task.taskname in HTML
 			// vm.task.taskdesc in HTML
 			vm.task.taskcreatedon = new Date().toString();
@@ -47,14 +53,15 @@
 			TaskService.Create(vm.task);
 
 			FlashService.Success("Task created!");
+			
 			clearInputs();
 		}
 		
 		function clearInputs(){
 			
-			taskname.value = "";
-			taskdesc.value = "";
-			taskactive.value = true;
+			$window.document.getElementById('tasknameinput').value = "";
+			$window.document.getElementById('taskdescinput').value = "";
+			$window.document.getElementById('taskactiveinput').value = true;
 			
 		}
 		

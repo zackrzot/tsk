@@ -63,10 +63,6 @@ function updateTask(req, res) {
 
 function deleteTask(req, res) {
     var taskId = req.params._id;
-    //if (req.params._id !== taskId) {
-    //    // can only delete own task
-    //    return res.status(401).send('You can only delete your own task');
-    //}
 	console.log(taskId);
     taskService.delete(taskId)
         .then(function () {

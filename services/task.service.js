@@ -44,10 +44,8 @@ function getAllTasks() {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (tasks) {
-            console.log("express.task.service: YES");
 			deferred.resolve(tasks);
         } else {
-            console.log("express.task.service: NO");
             deferred.resolve();
         }
     });

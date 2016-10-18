@@ -38,6 +38,7 @@ app.get('/', function (req, res) {
 });
 
 // Start server
-app.listen(config.port, function() {
+app.listen((process.env.PORT || config.port), function() {
 	console.log('Listening on port '+config.port+'...')
 })
+

@@ -39,6 +39,9 @@ app.get('/', function (req, res) {
 
 // Start server
 app.listen((process.env.PORT || config.port), function() {
-	console.log('Listening on port '+config.port+'...')
+	console.log('Listening on port '+(process.env.PORT || config.port)+'...')
 })
+
+
+
 

@@ -18,6 +18,13 @@
                 controllerAs: 'vm',
                 data: { activeTab: 'tasks' }
             })
+			.state('manage', {
+                url: '/manage',
+                templateUrl: 'manage/index.html',
+                controller: 'Manage.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'manage' }
+            })
 			.state('all', {
                 url: '/all',
                 templateUrl: 'tasks/index.html',

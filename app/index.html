@@ -16,6 +16,7 @@
 		<header>
 			<ul class="nav nav-tabs">
 				<li ng-class="{active: activeTab === 'tasks'}"><a ui-sref="tasks">Tasks</a></li>
+				<li ng-class="{active: activeTab === 'manage'}"><a ui-sref="manage">Manage</a></li>
 				<li ng-class="{active: activeTab === 'create'}"><a ui-sref="create">Create</a></li>
 				<li ng-class="{active: activeTab === 'account'}"><a ui-sref="account">Account</a></li>
 				<li><a href="/login" target="_self">Logout</a></li>
@@ -53,6 +54,7 @@
 		<script src="app-services/task.service.js"></script>
 		<script src="tasks/index.controller.js"></script>
 		<script src="create/index.controller.js"></script>
+		<script src="manage/index.controller.js"></script>
 		<script src="account/index.controller.js"></script>
 	</body>
 </html>

@@ -1,0 +1,24 @@
+﻿<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+<br>
+<div ng-controller="Manage.IndexController">
+	<h2>You have {{vm.tasks.length}} tasks. They are:</h2>
+	<br>
+	<input type="search" ng-model="q" placeholder="search tasks..." aria-label="search tasks" class="search" />
+	<table class="dynamic-container task-item-manage">
+		<tr>
+			<td class="manage-task-td" center>Index</td>
+			<td class="manage-task-td" center>Name</td>
+			<td class="manage-task-td" center>Description</td>
+			<td class="manage-task-td" center>Active</td>
+			<td class="manage-task-td" center>Completed</td>
+		</tr>
+		<tr class="animate-repeat" ng-repeat="task in vm.tasks | filter:q as results">
+				<td class="manage-task-td" center>{{$index + 1}}.</td>
+				<td class="manage-task-td" center>{{task.taskname}}</td>
+				<td class="manage-task-td" center>{{task.taskdesc}}</td>
+				<td class="manage-task-td" center>{{task.taskactive}}</td>
+				<td class="manage-task-td" center>{{task.taskcompleted}}</td>
+		</tr>
+	</table>
+</div>

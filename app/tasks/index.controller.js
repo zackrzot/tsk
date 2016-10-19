@@ -11,12 +11,30 @@
         vm.user = null;
 		vm.tasks = null;
 		
+		vm.activeListAvail = true;
+		vm.inactiveListAvail = true;
+		vm.completeListAvail = true;
+		
 		vm.toggleComplete = toggleComplete;
 		vm.toggleActive = toggleActive;
 		vm.deleteTask = deleteTask;
 		vm.confirmDeleteTask = confirmDeleteTask;
-
+		vm.confirmDeleteAllCompletedTasks = confirmDeleteAllCompletedTasks;
+		
         initController();
+		
+        function initController() {
+            // get current user
+            UserService.GetCurrent().then(function (user) {
+                vm.user = user;
+				
+				// Get tasks for user
+				getTasks();
+				
+				// Populate the filter selection
+				populateViewOptionsDropdown();
+            });
+        }
 
 		function deleteTask(_id) {
 			TaskService.Delete(_id).then(function (user) {
@@ -25,10 +43,30 @@
             });
 		}
 		
+		function confirmDeleteAllCompletedTasks() {
+			var r = confirm("Are you sure you want to delete ALL completed tasks?");
+			if (r == true) {
+				deleteAllCompletedTasks();
+			} 
+		}
+		
+		function deleteAllCompletedTasks() {
+			var len = vm.tasks.length;
+			for (var i = 0; i < len; i++) {
+				var task = vm.tasks[i];
+				if(task.taskcompleted){
+					deleteTask(task._id);
+				}
+			}
+		}
+		
 		function refreshTasksLists(){
-			clearChildNodes('activeTasks');
-			clearChildNodes('inactiveTasks');
-			clearChildNodes('completedTasks');
+			if(vm.activeListAvail)
+				clearChildNodes('activeTasks');
+			if(vm.inactiveListAvail)
+				clearChildNodes('inactiveTasks');
+			if(vm.completeListAvail)
+				clearChildNodes('completedTasks');
 			getTasks();
 		}
 		
@@ -96,19 +134,6 @@
 			}
 		}
 		
-        function initController() {
-            // get current user
-            UserService.GetCurrent().then(function (user) {
-                vm.user = user;
-				
-				// Get tasks for user
-				getTasks();
-				
-				// Populate the filter selection
-				populateViewOptionsDropdown();
-            });
-        }
-		
 		function getTasks(){
 			// get users tasks
 			TaskService.GetUsersTasks(vm.user._id).then(function (tasks) {
@@ -119,8 +144,16 @@
 		
 		function displayTasks(){
 			var div_activeTasks = $window.document.getElementById('activeTasks');
+			if(div_activeTasks==null)
+				vm.activeListAvail = false;
+
 			var div_inactiveTasks = $window.document.getElementById('inactiveTasks');
+			if(div_inactiveTasks==null)
+				vm.inactiveListAvail = false;
+
 			var div_completedTasks = $window.document.getElementById('completedTasks');
+			if(div_completedTasks==null)
+				vm.completeListAvail = false;
 
 			var activeCount = 0;
 			var inactiveCount = 0;
@@ -130,27 +163,32 @@
 			for (var i = 0; i < len; i++) {
 				var task = vm.tasks[i];
 
-				if(task.taskactive && !task.taskdeleted && !task.taskcompleted){
+				if(task.taskactive && !task.taskcompleted && vm.activeListAvail){
 					div_activeTasks.appendChild(generateTaskElementListItem(task, "list-group-item-active-task"));
 					activeCount++;
 				}
-				if(!task.taskactive && !task.taskdeleted && !task.taskcompleted){
+				if(!task.taskactive && !task.taskcompleted && vm.inactiveListAvail){
 					div_inactiveTasks.appendChild(generateTaskElementListItem(task, "list-group-item-inactive-task"));
 					inactiveCount++;
 				}
-				if(task.taskcompleted){
+				if(task.taskcompleted && vm.completeListAvail){
 					div_completedTasks.appendChild(generateTaskElementListItem(task, "list-group-item-completed-task"));
 					completedCount++;
 				}
 			}
 			
-			var activeTasksLabel = $window.document.getElementById('activeTasksLabel');
-			activeTasksLabel.innerHTML = "Active ("+activeCount.toString()+")";
-			var inactiveTasksLabel = $window.document.getElementById('inactiveTasksLabel');
-			inactiveTasksLabel.innerHTML = "Inactive ("+inactiveCount.toString()+")";
-			var completedTasksLabel = $window.document.getElementById('completedTasksLabel');
-			completedTasksLabel.innerHTML = "Completed ("+completedCount.toString()+")";
-			
+			if(vm.activeListAvail){
+				var activeTasksLabel = $window.document.getElementById('activeTasksLabel');
+				activeTasksLabel.innerHTML = "Active ("+activeCount.toString()+")";
+			}
+			if(vm.inactiveListAvail){
+				var inactiveTasksLabel = $window.document.getElementById('inactiveTasksLabel');
+				inactiveTasksLabel.innerHTML = "Inactive ("+inactiveCount.toString()+")";
+			}
+			if(vm.completeListAvail){
+				var completedTasksLabel = $window.document.getElementById('completedTasksLabel');
+				completedTasksLabel.innerHTML = "Completed ("+completedCount.toString()+")";
+			}
 		}
 		
 		function populateViewOptionsDropdown(){
@@ -160,7 +198,6 @@
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/active", "Active"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/inactive", "Inactive"));
 			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/completed", "Completed"));
-			dropdownMenuViewOptions.appendChild(generateViewOptionsDropdownItem("#/overdue", "Overdue"));
 		}
 		
 		function generateViewOptionsDropdownItem(link, text){

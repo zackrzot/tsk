@@ -27,28 +27,21 @@
             })
 			.state('active', {
                 url: '/active',
-                templateUrl: 'tasks/index.html',
+                templateUrl: 'tasks/active.html',
                 controller: 'Tasks.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'tasks' }
             })
 			.state('inactive', {
                 url: '/inactive',
-                templateUrl: 'tasks/index.html',
+                templateUrl: 'tasks/inactive.html',
                 controller: 'Tasks.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'tasks' }
             })
 			.state('completed', {
                 url: '/completed',
-                templateUrl: 'tasks/index.html',
-                controller: 'Tasks.IndexController',
-                controllerAs: 'vm',
-                data: { activeTab: 'tasks' }
-            })
-			.state('overdue', {
-                url: '/overdue',
-                templateUrl: 'tasks/index.html',
+                templateUrl: 'tasks/completed.html',
                 controller: 'Tasks.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'tasks' }
